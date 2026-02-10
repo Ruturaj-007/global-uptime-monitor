@@ -36,3 +36,53 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# ========================
+# Node / JS
+# ========================
+node_modules
+.pnpm-store
+.pnp.*
+.npm
+.yarn
+
+# ========================
+# Build outputs
+# ========================
+dist
+build
+.next
+out
+.turbo
+
+# ========================
+# Prisma
+# ========================
+.env
+.env.*
+prisma/dev.db
+prisma/dev.db-journal
+packages/db/generated
+
+# ========================
+# Logs
+# ========================
+logs
+*.log
+pnpm-debug.log*
+
+# ========================
+# OS / Editor
+# ========================
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# ========================
+# Cache
+# ========================
+.cache
+.eslintcache
+
