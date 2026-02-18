@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -7,13 +8,13 @@ datasource db {
 }
 
 model User {
-  id        String        @id       @default(uuid())
+  id        String        @id @default(uuid())
   email     String        @unique
   websites  Website[]
 }
 
 model Website {
-  id        String        @id       @default(uuid())
+  id        String        @id @default(uuid())
   url       String
   userId    String
   user      User          @relation(fields: [userId], references: [id])
@@ -22,7 +23,7 @@ model Website {
 }
 
 model Validator {
-  id        String        @id       @default(uuid())
+  id        String        @id @default(uuid())
   publicKey String        @unique
   location  String
   ip        String
@@ -30,21 +31,18 @@ model Validator {
 }
 
 model WebsiteTick {
-  id            String        @id       @default(uuid())
-  websiteId     String   
-  validatorId   String 
-  createdAt     DateTime      @default(now())
-  status        WebsiteStatus
-  latency       Float
+  id          String        @id @default(uuid())
+  websiteId   String
+  validatorId String
+  createdAt   DateTime      @default(now())
+  status      WebsiteStatus
+  latency     Float
 
-  website       Website       @relation(fields: [websiteId], references: [id])
-  validator     Validator     @relation(fields: [validatorId], references: [id])
+  website   Website   @relation(fields: [websiteId], references: [id])
+  validator Validator @relation(fields: [validatorId], references: [id])
 }
 
 enum WebsiteStatus {
   GOOD
   BAD
 }
-
-
-
