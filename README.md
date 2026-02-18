@@ -3,7 +3,7 @@
 A full-stack, real-time website uptime monitoring system built with a modern TypeScript monorepo. Monitor your websites 24/7, track response times, and get a visual history of uptime status — with **Solana blockchain integration coming soon**.
 
 ![Dashboard Page](assets/landing_page.png)
-![Website Status](assets/websiteStatus.png)
+![Website Status](assets/websiteStatusMonitoring.png)
 
 ---
 
