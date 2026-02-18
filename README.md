@@ -1,135 +1,194 @@
-# Turborepo starter
+# 🌐 Global Uptime Monitor
 
-This Turborepo starter is maintained by the Turborepo core team.
+A full-stack, real-time website uptime monitoring system built with a modern TypeScript monorepo. Monitor your websites 24/7, track response times, and get a visual history of uptime status — with **Solana blockchain integration coming soon**.
 
-## Using this example
+![Dashboard Page](assets/landing_page.png)
+![Website Status](assets/websiteStatus.png)
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+##  Features
 
-## What's inside?
+-  **Real-time monitoring** — Worker pings all registered websites every minute
+-  **Visual uptime history** — 10-window tick display showing the last 30 minutes
+-  **Add & remove websites** — Simple dashboard UI to manage monitored URLs
+-  **Auth-ready** — Clerk authentication integrated (per-user website ownership)
+-  **Dark mode** — Full dark/light theme support
+-  **Blazing fast stack** — Next.js 16, Express 5, Prisma 7, PostgreSQL
+-  **Solana integration** — Coming soon (validator rewards on-chain)
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## Tech Stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 16, Tailwind CSS v4, Clerk Auth |
+| Backend API | Express 5, TypeScript, tsx |
+| Database | PostgreSQL (Docker), Prisma ORM v7 |
+| DB Adapter | `@prisma/adapter-pg` |
+| Monorepo | Turborepo + pnpm workspaces |
+| Worker | Node.js background service (axios HTTP checks) |
+| Blockchain | Solana *(coming soon)* |
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+---
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+##  Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+global-uptime-monitor/
+├── apps/
+│   ├── api/                  # Express REST API
+│   │   └── src/
+│   │       ├── index.ts      # API routes
+│   │       ├── worker.ts     # Website ping worker
+│   │       ├── middleware.ts # Auth middleware
+│   │       └── env.ts        # Dotenv loader
+│   └── frontend/             # Next.js app
+│       ├── app/
+│       │   ├── dashboard/    # Dashboard page
+│       │   └── page.tsx      # Landing page
+│       ├── components/       # Appbar, UI components
+│       └── hooks/            # useWebsites hook
+├── packages/
+│   └── db/                   # Shared Prisma client
+│       ├── prisma/
+│       │   ├── schema.prisma
+│       │   └── seed.ts
+│       ├── src/index.ts      # getPrismaClient()
+│       └── prisma.config.ts
+├── .env                      # Root env file
+└── package.json              # Turborepo config
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## Getting Started
 
-```
-cd my-turborepo
+### Prerequisites
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+- Node.js >= 18
+- pnpm >= 9
+- Docker (for PostgreSQL)
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+### 1. Clone the repo
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+git clone https://github.com/yourusername/global-uptime-monitor.git
+cd global-uptime-monitor
 ```
 
-### Remote Caching
+### 2. Start PostgreSQL with Docker
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+docker run --name uptime-postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=uptime \
+  -p 51214:5432 \
+  -d postgres:15
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### 3. Set up environment variables
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+Create a `.env` file in the root:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:51214/uptime"
 ```
 
-## Useful Links
+Also create `packages/db/.env` with the same `DATABASE_URL` for running Prisma CLI commands.
 
-Learn more about the power of Turborepo:
+### 4. Install dependencies
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+```bash
+pnpm install
+```
+
+### 5. Set up the database
+
+```bash
+cd packages/db
+pnpm dlx prisma migrate dev --name init
+pnpm dlx prisma generate
+```
+
+### 6. Seed the database (optional)
+
+```bash
+pnpm dlx tsx prisma/seed.ts
+```
+
+### 7. Run the project
+
+Open **three terminals**:
+
+```bash
+# Terminal 1 — API server
+cd apps/api
+pnpm dev
+
+# Terminal 2 — Background worker (pings websites every minute)
+cd apps/api
+pnpm worker
+
+# Terminal 3 — Frontend
+cd apps/frontend
+pnpm dev
+```
+
+Visit **http://localhost:3000** 🎉
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/v1/website` | Register a new website to monitor |
+| `GET` | `/api/v1/websites` | List all active websites for the user |
+| `GET` | `/api/v1/website/status` | Get status + tick history for a website |
+| `DELETE` | `/api/v1/website/` | Soft-delete (stop monitoring) a website |
+
+---
+
+##  Database Schema
+
+```prisma
+model User         # Clerk user accounts
+model Website      # Monitored URLs (soft-deletable)
+model Validator    # Worker nodes that perform checks
+model WebsiteTick  # Individual ping results (GOOD / BAD)
+```
+
+---
+
+## How It Works
+
+1. User adds a website URL via the dashboard
+2. The **worker** (`worker.ts`) runs every 60 seconds
+3. For each active website, it sends an HTTP GET request
+4. On success → creates a `WebsiteTick` with status `GOOD` and measured latency
+5. On failure → creates a `WebsiteTick` with status `BAD`
+6. The frontend polls the API and renders the last 30 minutes as 10 colored tick windows
+
+---
+
+## Solana Integration 
+
+The plan is to decentralize the validator network using Solana:
+
+- Validators will be independent nodes that stake SOL to participate
+- Each successful ping will be rewarded on-chain
+- Malicious or inaccurate validators will be slashed
+- Website owners will pay in SOL for monitoring services
+
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
+
+---
+
+## 📄 License
+
+MIT © 2026
