@@ -10,7 +10,9 @@ type UptimeStatus = "good" | "bad" | "unknown";
 
 function StatusCircle({ status }: { status: UptimeStatus }) {
   return (
-    <div className={`w-3 h-3 rounded-full ${status === 'good' ? 'bg-green-500' : status === 'bad' ? 'bg-red-500' : 'bg-gray-500'}`} />
+    <div className={`w-3 h-3 rounded-full ${
+      status === 'good' ? 'bg-green-500' : status === 'bad' ? 'bg-red-500' : 'bg-gray-500'
+    }`} />
   );
 }
 
@@ -29,7 +31,13 @@ function UptimeTicks({ ticks }: { ticks: UptimeStatus[] }) {
   );
 }
 
-function CreateWebsiteModal({ isOpen, onClose }: { isOpen: boolean; onClose: (url: string | null) => void }) {
+function CreateWebsiteModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: (url: string | null) => void;
+}) {
   const [url, setUrl] = useState('');
   if (!isOpen) return null;
 
@@ -37,34 +45,34 @@ function CreateWebsiteModal({ isOpen, onClose }: { isOpen: boolean; onClose: (ur
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-semibold mb-4 dark:text-white">Add New Website</h2>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              URL
-            </label>
-            <input
-              type="url"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-          </div>
-          <div className="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={() => onClose(null)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              onClick={() => onClose(url)}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
-            >
-              Add Website
-            </button>
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            URL
+          </label>
+          <input
+            type="url"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+            placeholder="https://example.com"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </div>
+        <div className="flex justify-end space-x-3 mt-6">
+          <button
+            type="button"
+            onClick={() => onClose(null)}
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => onClose(url)}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+          >
+            Add Website
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -105,7 +113,7 @@ function WebsiteCard({ website }: { website: ProcessedWebsite }) {
           )}
         </div>
       </div>
-      
+
       {isExpanded && (
         <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-700">
           <div className="mt-3">
@@ -124,48 +132,39 @@ function WebsiteCard({ website }: { website: ProcessedWebsite }) {
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {websites, refreshWebsites} = useWebsites();
-  const { getToken } = useAuth();
+  const { websites, refreshWebsites } = useWebsites();
+  const { getToken, isLoaded, isSignedIn } = useAuth();
 
   const processedWebsites = useMemo(() => {
-    return websites.map(website => {
-      // Sort ticks by creation time
-      const sortedTicks = [...website.ticks].sort((a, b) => 
+    return websites.map((website) => {
+      const sortedTicks = [...website.ticks].sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
-      // Get the most recent 30 minutes of ticks
       const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
-      const recentTicks = sortedTicks.filter(tick => 
-        new Date(tick.createdAt) > thirtyMinutesAgo
+      const recentTicks = sortedTicks.filter(
+        (tick) => new Date(tick.createdAt) > thirtyMinutesAgo
       );
 
-      // Aggregate ticks into 3-minute windows (10 windows total)
       const windows: UptimeStatus[] = [];
-
       for (let i = 0; i < 10; i++) {
         const windowStart = new Date(Date.now() - (i + 1) * 3 * 60 * 1000);
         const windowEnd = new Date(Date.now() - i * 3 * 60 * 1000);
-        
-        const windowTicks = recentTicks.filter(tick => {
+        const windowTicks = recentTicks.filter((tick) => {
           const tickTime = new Date(tick.createdAt);
           return tickTime >= windowStart && tickTime < windowEnd;
         });
-
-        // Window is considered up if majority of ticks are up
-        const upTicks = windowTicks.filter(tick => tick.status === 'GOOD').length;
-        windows[9 - i] = windowTicks.length === 0 ? "unknown" : (upTicks / windowTicks.length) >= 0.5 ? "good" : "bad";
+        const upTicks = windowTicks.filter((tick) => tick.status === 'GOOD').length;
+        windows[9 - i] =
+          windowTicks.length === 0 ? 'unknown'
+          : upTicks / windowTicks.length >= 0.5 ? 'good'
+          : 'bad';
       }
 
-      // Calculate overall status and uptime percentage
       const totalTicks = sortedTicks.length;
-      const upTicks = sortedTicks.filter(tick => tick.status === 'GOOD').length;
+      const upTicks = sortedTicks.filter((tick) => tick.status === 'GOOD').length;
       const uptimePercentage = totalTicks === 0 ? 100 : (upTicks / totalTicks) * 100;
-
-      // Get the most recent status
       const currentStatus = windows[windows.length - 1];
-
-      // Format the last checked time
       const lastChecked = sortedTicks[0]
         ? new Date(sortedTicks[0].createdAt).toLocaleTimeString()
         : 'Never';
@@ -181,7 +180,6 @@ function App() {
     });
   }, [websites]);
 
-  // Toggle dark mode
   React.useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -189,6 +187,24 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  // Wait for Clerk to load
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
+  // Redirect message if not signed in
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <p className="text-gray-500 dark:text-gray-400">Please sign in to view your dashboard.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
@@ -218,7 +234,7 @@ function App() {
             </button>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           {processedWebsites.map((website) => (
             <WebsiteCard key={website.id} website={website} />
@@ -229,23 +245,28 @@ function App() {
       <CreateWebsiteModal
         isOpen={isModalOpen}
         onClose={async (url) => {
-            if (url === null) {
-                setIsModalOpen(false);
-                return;
-            }
+          if (url === null) {
+            setIsModalOpen(false);
+            return;
+          }
 
-            const token = await getToken();
-            setIsModalOpen(false)
-            axios.post(`${API_BACKEND_URL}/api/v1/website`, {
-                url,
-            }, {
-                headers: {
-                    Authorization: token,
-                },
-            })
-            .then(() => {
-                refreshWebsites();
-            })
+          const token = await getToken();
+
+          if (!token) {
+            console.error("Clerk returned null token");
+            setIsModalOpen(false);
+            return;
+          }
+
+          setIsModalOpen(false);
+          axios
+            .post(
+              `${API_BACKEND_URL}/api/v1/website`,
+              { url },
+              { headers: { Authorization: token } }
+            )
+            .then(() => refreshWebsites())
+            .catch((err) => console.error("Failed to add website:", err));
         }}
       />
     </div>

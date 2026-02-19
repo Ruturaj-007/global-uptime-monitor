@@ -16,11 +16,18 @@ interface Website {
 }
 
 export function useWebsites() {
-    const { getToken } = useAuth();
+    const { getToken, isSignedIn, isLoaded } = useAuth();
     const [websites, setWebsites] = useState<Website[]>([]);
 
-    async function refreshWebsites() {    
+    async function refreshWebsites() {
         const token = await getToken();
+        console.log("useWebsites token:", token); // add this
+
+        if (!token) {
+            console.error("No token available");
+            return;
+        }
+
         const response = await axios.get(`${API_BACKEND_URL}/api/v1/websites`, {
             headers: {
                 Authorization: token,
@@ -31,6 +38,8 @@ export function useWebsites() {
     }
 
     useEffect(() => {
+        if (!isLoaded || !isSignedIn) return;
+
         refreshWebsites();
 
         const interval = setInterval(() => {
@@ -38,8 +47,7 @@ export function useWebsites() {
         }, 1000 * 60 * 1);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [isLoaded, isSignedIn]);
 
     return { websites, refreshWebsites };
-
 }
